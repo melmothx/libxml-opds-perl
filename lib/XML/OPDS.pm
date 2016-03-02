@@ -1,12 +1,17 @@
 package XML::OPDS;
 
-use 5.008;
 use strict;
 use warnings FATAL => 'all';
+use Types::Standard qw/Str Object ArrayRef InstanceOf/;
+use Moo;
+use DateTime;
+use XML::Atom;
+use XML::Atom::Feed;
+use XML::Atom::Entry;
 
 =head1 NAME
 
-XML::OPDS - The great new XML::OPDS!
+XML::OPDS - OPDS Feed creation
 
 =head1 VERSION
 
@@ -25,29 +30,54 @@ Perhaps a little code snippet.
 
     use XML::OPDS;
 
-    my $foo = XML::OPDS->new();
-    ...
+    my $feed = XML::OPDS->new(title => 'OPDS root', ... );
+    my $xml = $feed->render;
 
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
-=head1 SUBROUTINES/METHODS
-
-=head2 function1
+=head1 SETTERS/ACCESSORS
 
 =cut
 
-sub function1 {
-}
+has title => (is => 'rw',
+              isa => Str,
+              required => 1);
 
-=head2 function2
+has id => (is => 'rw', isa => Str);
+
+has navigations => (is => 'rw', isa => ArrayRef[InstanceOf['XML::OPDS::Navigation']]);
+
+has acquisitions => (is => 'rw', isa => ArrayRef[InstanceOf['XML::OPDS::Acquisition']]);
+
+has updated => (is => 'rw', isa => InstanceOf['DateTime'],
+                default => sub { return DateTime->now });
+
+has author => (is => 'rw', isa => Str, default => sub { __PACKAGE__ . ' ' . $VERSION });
+
+=head1 METHODS
+
+=head2 render
+
+Return the generated xml.
 
 =cut
 
-sub function2 {
+sub self_navigation {
+    my $self = shift;
+    if (my $navs = $self->navigations) {
+        my ($first) = grep { $_->rel eq 'self' } @$navs;
+        return $first;
+    }
+    else {
+        die "Missing navigation elements!";
+    }
 }
+
+sub render {
+    my $self = shift;
+    my $feed = XML::Atom::Feed->new(Version => 1.0);
+    $feed->add_link($self->self_navigation->as_link);
+    return $feed->as_xml;
+}
+
 
 =head1 AUTHOR
 
