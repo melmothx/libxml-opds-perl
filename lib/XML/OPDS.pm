@@ -51,37 +51,44 @@ Return the generated xml.
 =cut
 
 sub start_navigation {
-    return shift->_get_first_nav('start');
+    return shift->navigation_hash->{start};
 }
 
 sub self_navigation {
-    return shift->_get_first_nav('self');
+    return shift->navigation_hash->{self};
 }
 
 sub navigation_entries {
     my $self = shift;
-    if (my $navs = $self->navigations) {
-        my @others = grep { $_->rel ne 'start' and $_->rel ne 'self' } @$navs;
-        return @others;
+    my $hash = $self->navigation_hash;
+    my @others;
+    foreach my $k (sort keys %$hash) {
+        my $entries = $hash->{$k};
+        # exclude the uniques
+        if (ref($entries) eq 'ARRAY') {
+            push @others, @$entries;
+        }
     }
-    else {
-        die "No navigation founds";
-    }
+    return @others;
 }
 
-sub _get_first_nav {
-    my ($self, $rel) = @_;
-    die "Missing arg" unless $rel;
-    my $found;
-    if (my $navs = $self->navigations) {
-        ($found) = grep { $_->rel eq $rel } @$navs;
+sub navigation_hash {
+    my $self = shift;
+    my $navs = $self->navigations;
+    die "Missing navigations" unless $navs && @$navs;
+    my %out;
+    foreach my $nav (@$navs) {
+        my $rel = $nav->rel;
+        # uniques
+        if ($rel eq 'start' or $rel eq 'self') {
+            $out{$rel} = $nav;
+        }
+        else {
+            $out{$rel} ||= [];
+            push @{$out{$rel}}, $nav;
+        }
     }
-    if ($found) {
-        return $found;
-    }
-    else {
-        die "Missing navigation element $rel!";
-    }
+    return \%out;
 }
 
 sub is_acquisition {
