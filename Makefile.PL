@@ -16,6 +16,7 @@ WriteMakefile(
     },
     BUILD_REQUIRES => {
         'Test::More' => 0,
+        'Test::Differences' => 0,
     },
     PREREQ_PM => {
                   'Moo' => 1,
