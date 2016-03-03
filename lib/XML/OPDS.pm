@@ -51,6 +51,7 @@ has updated => (is => 'rw', isa => InstanceOf['DateTime'],
                 default => sub { return DateTime->now });
 
 has author => (is => 'rw', isa => Str, default => sub { __PACKAGE__ . ' ' . $VERSION });
+has author_uri => (is => 'rw', isa => Str, default => sub { 'http://amusewiki.org' });
 
 =head1 METHODS
 
@@ -60,21 +61,77 @@ Return the generated xml.
 
 =cut
 
+sub start_navigation {
+    return shift->_get_first_nav('start');
+}
+
 sub self_navigation {
+    return shift->_get_first_nav('self');
+}
+
+sub navigation_entries {
     my $self = shift;
     if (my $navs = $self->navigations) {
-        my ($first) = grep { $_->rel eq 'self' } @$navs;
-        return $first;
+        my @others = grep { $_->rel ne 'start' and $_->rel ne 'self' } @$navs;
+        return @others;
     }
     else {
-        die "Missing navigation elements!";
+        die "No navigation founds";
+    }
+}
+
+sub _get_first_nav {
+    my ($self, $rel) = @_;
+    die "Missing arg" unless $rel;
+    my $found;
+    if (my $navs = $self->navigations) {
+        ($found) = grep { $_->rel eq $rel } @$navs;
+    }
+    if ($found) {
+        return $found;
+    }
+    else {
+        die "Missing navigation element $rel!";
+    }
+}
+
+sub is_acquisition {
+    if (my $acquisitions = shift->acquisitions) {
+        return scalar(@$acquisitions);
+    }
+    else {
+        return 0;
     }
 }
 
 sub render {
     my $self = shift;
     my $feed = XML::Atom::Feed->new(Version => 1.0);
+    $feed->id($self->id || $self->self_navigation->href);
     $feed->add_link($self->self_navigation->as_link);
+    $feed->add_link($self->start_navigation->as_link);
+    $feed->title($self->title);
+    $feed->updated($self->updated);
+    if (my $author_name = $self->author) {
+        my $author = XML::Atom::Person->new(Version => 1.0);
+        $author->name($author_name);
+        if (my $author_uri = $self->author_uri) {
+            $author->uri($author_uri);
+        }
+        $feed->author($author);
+    }
+    if ($self->is_acquisition) {
+        # if it's an acquisition feed, stuff the links in the feed.
+        foreach my $link ($self->navigation_entries) {
+            $feed->add_link($link->as_link);
+        }
+    }
+    else {
+        # othewise use the links to create entries
+        foreach my $entry ($self->navigation_entries) {
+            $feed->add_entry($entry->as_entry);
+        }
+    }
     return $feed->as_xml;
 }
 

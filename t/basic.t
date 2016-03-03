@@ -13,6 +13,12 @@ my $root = XML::OPDS::Navigation->new(
                                       title => 'Root',
                                       href => '/',
                                      );
+my $start = XML::OPDS::Navigation->new(
+                                      rel => 'start',
+                                      title => 'Root',
+                                      href => '/',
+                                     );
+
 my $titles = XML::OPDS::Navigation->new(
                                         title => 'Titles',
                                         description => 'texts sorted by title',
@@ -21,16 +27,15 @@ my $titles = XML::OPDS::Navigation->new(
                                        );
 
 my $topics = XML::OPDS::Navigation->new(
-                                        title => 'Titles',
+                                        title => 'Topics',
                                         description => 'texts sorted by topics',
                                         href => '/topics',
                                        );
 
 my $feed = XML::OPDS->new(title => 'OPDS Catalog Root Example',
-                          navigations => [$root, $titles, $topics ]);
-
-diag $feed->author;
+                          navigations => [$root, $start, $titles, $topics ]);
 
 ok ($feed);
 ok ($feed->render);
-diag $feed->render;
+print $feed->render;
+done_testing;
