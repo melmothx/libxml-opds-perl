@@ -32,6 +32,8 @@ has description => (is => 'rw', isa => Str);
 has updated => (is => 'rw', isa => InstanceOf['DateTime'],
                 default => sub { return DateTime->now });
 
+has prefix => (is => 'rw', isa => Str, default => sub { '' });
+
 sub link_type {
     my $self = shift;
     my $kind = $self->acquisition ? 'acquisition' : 'navigation';
@@ -42,14 +44,14 @@ sub as_link {
     my $self = shift;
     my $link = XML::Atom::Link->new(Version => 1.0);
     $link->rel($self->rel);
-    $link->href($self->href);
+    $link->href($self->prefix . $self->href);
     $link->type($self->link_type);
     return $link;
 }
 
 sub identifier {
     my $self = shift;
-    return $self->id || $self->href;
+    return $self->id || $self->prefix . $self->href;
 }
 
 sub as_entry {

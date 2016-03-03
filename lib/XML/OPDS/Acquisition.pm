@@ -57,10 +57,11 @@ has _dc => (is => 'lazy',
                 XML::Atom::Namespace->new(dc => 'http://purl.org/dc/elements/1.1/');
             });
 
+has prefix => (is => 'ro', isa => Str, default => sub { '' });
 
 sub identifier {
     my $self = shift;
-    return $self->id || $self->href;
+    return $self->id || $self->prefix . $self->href;
 }
 
 sub authors_as_links {
@@ -73,7 +74,7 @@ sub authors_as_links {
                 my $author_obj = XML::Atom::Person->new(Version => 1.0);
                 $author_obj->name($hash->{name});
                 if (my $uri = $hash->{uri}) {
-                    $author_obj->uri($uri);
+                    $author_obj->uri($self->prefix . $uri);
                 }
                 push @out,  $author_obj;
             }
@@ -116,7 +117,7 @@ sub files_as_links {
         next unless $mime_type;
         my $link = XML::Atom::Link->new(Version => 1.0);
         $link->rel("http://opds-spec.org/$file->{rel}");
-        $link->href($file->{href});
+        $link->href($self->prefix . $file->{href});
         $link->type($mime_type);
         push @out, $link;
     }

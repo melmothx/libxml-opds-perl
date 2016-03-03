@@ -8,6 +8,8 @@ use DateTime;
 use XML::Atom;
 use XML::Atom::Feed;
 use XML::Atom::Entry;
+use XML::OPDS::Navigation;
+use XML::OPDS::Acquisition;
 
 =head1 NAME
 
@@ -37,10 +39,11 @@ Perhaps a little code snippet.
 
 =cut
 
-has navigations => (is => 'rw', isa => ArrayRef[InstanceOf['XML::OPDS::Navigation']]);
-has acquisitions => (is => 'rw', isa => ArrayRef[InstanceOf['XML::OPDS::Acquisition']]);
+has navigations => (is => 'rw', isa => ArrayRef[InstanceOf['XML::OPDS::Navigation']], default => sub { [] });
+has acquisitions => (is => 'rw', isa => ArrayRef[InstanceOf['XML::OPDS::Acquisition']], default => sub { [] });
 has author => (is => 'rw', isa => Str, default => sub { __PACKAGE__ . ' ' . $VERSION });
 has author_uri => (is => 'rw', isa => Str, default => sub { 'http://amusewiki.org' });
+has prefix => (is => 'rw', isa => Str, default => sub { '' });
 
 =head1 METHODS
 
@@ -118,9 +121,11 @@ sub render {
         $feed->author($author);
     }
     if ($self->is_acquisition) {
-        # if it's an acquisition feed, stuff the links in the feed.
+        # if it's an acquisition feed, stuff the links in the feed,
+        # but filter out the subsections. And probably other stuff as well.
         foreach my $link ($self->navigation_entries) {
-            $feed->add_link($link->as_link);
+            my %rels = (up => 1, related => 1, alternate => 1);
+            $feed->add_link($link->as_link) if $rels{$link->rel};
         }
         foreach my $entry (@{$self->acquisitions}) {
             $feed->add_entry($entry->as_entry);
@@ -133,6 +138,30 @@ sub render {
         }
     }
     return $feed->as_xml;
+}
+
+sub create_navigation {
+    my $self = shift;
+    return XML::OPDS::Navigation->new(prefix => $self->prefix, @_);
+}
+
+sub add_to_navigations {
+    my $self = shift;
+    my $navigation = $self->create_navigation(@_);
+    push @{$self->navigations}, $navigation;
+    return $navigation;
+}
+
+sub create_acquisition {
+    my $self = shift;
+    return XML::OPDS::Acquisition->new(prefix => $self->prefix, @_);
+}
+
+sub add_to_acquisitions {
+    my $self = shift;
+    my $acquisition = $self->create_acquisition(@_);
+    push @{$self->acquisitions}, $acquisition;
+    return $acquisition;
 }
 
 
