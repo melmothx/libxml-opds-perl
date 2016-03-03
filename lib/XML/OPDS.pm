@@ -122,6 +122,9 @@ sub render {
         foreach my $link ($self->navigation_entries) {
             $feed->add_link($link->as_link);
         }
+        foreach my $entry (@{$self->acquisitions}) {
+            $feed->add_entry($entry->as_entry);
+        }
     }
     else {
         # othewise use the links to create entries

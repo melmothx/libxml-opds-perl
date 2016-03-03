@@ -15,19 +15,19 @@ XML::OPDS::Navigation - Navigation elements for OPDS feeds
 
 =cut
 
-has id => (is => 'ro', isa => Str);
+has id => (is => 'rw', isa => Str);
 
-has rel => (is => 'ro',
+has rel => (is => 'rw',
             isa => Enum[qw/self start up subsection/],
             default => 'subsection');
 
-has title => (is => 'ro', isa => Str);
+has title => (is => 'rw', isa => Str);
 
-has href => (is => 'ro', isa => Str, required => 1);
+has href => (is => 'rw', isa => Str, required => 1);
 
-has acquisition => (is => 'ro', isa => Bool, default => sub { 0 });
+has acquisition => (is => 'rw', isa => Bool, default => sub { 0 });
 
-has description => (is => 'ro', isa => Str);
+has description => (is => 'rw', isa => Str);
 
 has updated => (is => 'rw', isa => InstanceOf['DateTime'],
                 default => sub { return DateTime->now });
