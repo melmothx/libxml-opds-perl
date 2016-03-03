@@ -42,9 +42,7 @@ my $topics = XML::OPDS::Navigation->new(
                                        );
 
 {
-    my $feed = XML::OPDS->new(title => 'OPDS Catalog Root Example',
-                              updated => $updated,
-                              navigations => [$root, $start, $titles, $topics ]);
+    my $feed = XML::OPDS->new(navigations => [$root, $start, $titles, $topics ]);
 
     ok ($feed, "Object created ok");
     my $expected =<< 'FEED';
@@ -53,7 +51,7 @@ my $topics = XML::OPDS::Navigation->new(
   <id>/</id>
   <link rel="self" href="/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
   <link rel="start" href="/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
-  <title>OPDS Catalog Root Example</title>
+  <title>Root</title>
   <updated>2016-03-01T00:00:00</updated>
   <author>
     <name>XML::OPDS 0.01</name>

@@ -47,11 +47,16 @@ sub as_link {
     return $link;
 }
 
+sub identifier {
+    my $self = shift;
+    return $self->id || $self->href;
+}
+
 sub as_entry {
     my $self = shift;
     my $item = XML::Atom::Entry->new(Version => 1.0);
     $item->title($self->title);
-    $item->id($self->id || $self->href);
+    $item->id($self->identifier);
     $item->content($self->description);
     $item->updated($self->updated);
     $item->add_link($self->as_link);

@@ -37,19 +37,8 @@ Perhaps a little code snippet.
 
 =cut
 
-has title => (is => 'rw',
-              isa => Str,
-              required => 1);
-
-has id => (is => 'rw', isa => Str);
-
 has navigations => (is => 'rw', isa => ArrayRef[InstanceOf['XML::OPDS::Navigation']]);
-
 has acquisitions => (is => 'rw', isa => ArrayRef[InstanceOf['XML::OPDS::Acquisition']]);
-
-has updated => (is => 'rw', isa => InstanceOf['DateTime'],
-                default => sub { return DateTime->now });
-
 has author => (is => 'rw', isa => Str, default => sub { __PACKAGE__ . ' ' . $VERSION });
 has author_uri => (is => 'rw', isa => Str, default => sub { 'http://amusewiki.org' });
 
@@ -107,11 +96,12 @@ sub is_acquisition {
 sub render {
     my $self = shift;
     my $feed = XML::Atom::Feed->new(Version => 1.0);
-    $feed->id($self->id || $self->self_navigation->href);
-    $feed->add_link($self->self_navigation->as_link);
+    my $main = $self->self_navigation;
+    $feed->id($main->identifier);
+    $feed->add_link($main->as_link);
     $feed->add_link($self->start_navigation->as_link);
-    $feed->title($self->title);
-    $feed->updated($self->updated);
+    $feed->title($main->title);
+    $feed->updated($main->updated);
     if (my $author_name = $self->author) {
         my $author = XML::Atom::Person->new(Version => 1.0);
         $author->name($author_name);
