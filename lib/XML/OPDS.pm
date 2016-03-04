@@ -136,6 +136,10 @@ pass the full urls, leave it at the default.
 
 Return the generated xml.
 
+=head2 atom
+
+Return the L<XML::Atom::Feed> object.
+
 =head2 create_navigation(%args)
 
 Create a L<XML::OPDS::Navigation> object inheriting the prefix.
@@ -147,6 +151,13 @@ Create a L<XML::OPDS::Acquisition> object inheriting the prefix.
 =head2 add_to_navigations(%args)
 
 Call C<create_navigation> and add it to the C<navigations> stack.
+
+If a navigation with the attribute C<rel> set to C<self> was already
+added, the new one will become the new C<self>, while the old one will
+become an C<up> rel.
+
+This is designed to play well with chained actions (so you can reuse
+the object, stack selfs, and the result will be correct).
 
 =head2 add_to_acquisitions(%args)
 
@@ -221,7 +232,7 @@ sub is_acquisition {
     }
 }
 
-sub render {
+sub atom {
     my $self = shift;
     my $feed = XML::Atom::Feed->new(Version => 1.0);
     my $main = $self->navigation_hash->{'self'};
@@ -260,7 +271,11 @@ sub render {
             $feed->add_entry($entry->as_entry);
         }
     }
-    return $feed->as_xml;
+    return $feed;
+}
+
+sub render {
+    shift->atom->as_xml;
 }
 
 sub create_navigation {

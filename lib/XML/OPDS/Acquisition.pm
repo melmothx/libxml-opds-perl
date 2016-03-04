@@ -103,7 +103,7 @@ has publisher => (is => 'ro', isa => Str);
 has updated => (is => 'rw', isa => InstanceOf['DateTime'],
                 default => sub { return DateTime->now });
 
-has files => (is => 'ro', isa => ArrayRef[Str]);
+has files => (is => 'ro', isa => ArrayRef[Str], default => sub { [] });
 
 =head2 thumbnail
 
