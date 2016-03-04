@@ -154,16 +154,6 @@ Call C<create_acquisition> and add it to the C<acquisition> stack.
 
 =head1 INTERNAL METHODS
 
-=head2 start_navigation
-
-Return the last L<XML::OPDS::Navigation> object in the C<navigations>
-arrayref with a rel C<start>
-
-=head2 self_navigation
-
-Return the last L<XML::OPDS::Navigation> object in the C<navigations>
-arrayref with a rel C<self>
-
 =head2 navigation_entries
 
 Return a list of L<XML::OPDS::Navigation> objects excluding C<self>
@@ -187,14 +177,6 @@ has author => (is => 'rw', isa => Str, default => sub { __PACKAGE__ . ' ' . $VER
 has author_uri => (is => 'rw', isa => Str, default => sub { 'http://amusewiki.org' });
 has prefix => (is => 'rw', isa => Str, default => sub { '' });
 
-sub start_navigation {
-    return shift->navigation_hash->{start};
-}
-
-sub self_navigation {
-    return shift->navigation_hash->{self};
-}
-
 sub navigation_entries {
     my $self = shift;
     my $hash = $self->navigation_hash;
@@ -217,7 +199,9 @@ sub navigation_hash {
     foreach my $nav (@$navs) {
         my $rel = $nav->rel;
         # uniques
-        if ($rel eq 'start' or $rel eq 'self') {
+        if ($rel eq 'start' or
+            $rel eq 'self'  or
+            $rel eq 'up') {
             $out{$rel} = $nav;
         }
         else {
@@ -240,10 +224,15 @@ sub is_acquisition {
 sub render {
     my $self = shift;
     my $feed = XML::Atom::Feed->new(Version => 1.0);
-    my $main = $self->self_navigation;
+    my $main = $self->navigation_hash->{'self'};
+    die "Missing self navigation element!" unless $main;
     $feed->id($main->identifier);
     $feed->add_link($main->as_link);
-    $feed->add_link($self->start_navigation->as_link);
+    foreach my $unique (qw/up start/) {
+        if (my $nav = $self->navigation_hash->{$unique}) {
+            $feed->add_link($nav->as_link);
+        }
+    }
     $feed->title($main->title);
     $feed->updated($main->updated);
     if (my $author_name = $self->author) {
@@ -282,6 +271,13 @@ sub create_navigation {
 sub add_to_navigations {
     my $self = shift;
     my $navigation = $self->create_navigation(@_);
+    # turn the previous self in an "up" link.
+    if ($navigation->rel eq 'self') {
+        foreach my $previous (grep { $_->rel eq 'self' } @{$self->navigations}) {
+            print "Turning " . $previous->href . " in up\n";
+            $previous->rel('up');
+        }
+    }
     push @{$self->navigations}, $navigation;
     return $navigation;
 }

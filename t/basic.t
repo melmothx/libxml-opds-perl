@@ -123,6 +123,7 @@ FEED
 <feed xmlns="http://www.w3.org/2005/Atom">
   <id>/titles</id>
   <link rel="self" href="/titles" type="application/atom+xml;profile=opds-catalog;kind=acquisition"/>
+  <link rel="up" href="/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
   <link rel="start" href="/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
   <title>Titles</title>
   <updated>2016-03-01T00:00:00</updated>
@@ -130,7 +131,6 @@ FEED
     <name>XML::OPDS 0.01</name>
     <uri>http://amusewiki.org</uri>
   </author>
-  <link rel="up" href="/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
   <entry>
     <id>/first/title</id>
     <title>First title</title>
