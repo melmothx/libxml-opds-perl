@@ -183,8 +183,10 @@ sub files_as_links {
                 png => 'image/png',
                 jpg => 'image/jpeg',
                 jpeg => 'image/jpeg',
+                gif => 'image/gif',
                 mobi => 'application/x-mobipocket-ebook',
                );
+    # maybe support open-access, borrow, buy, sample, subscribe ? 8.4.1
     my @all = map { +{ rel => 'acquisition', href => $_ } } @{$self->files};
     die "Missing acquisition links" unless @all;
 

@@ -22,6 +22,12 @@ $feed->add_to_navigations(
                           title => 'Root',
                           href => '/',
                          );
+
+$feed->add_to_navigations(
+                          rel => 'search',
+                          title => 'Search',
+                          href => '/search',
+                         );
 $feed->add_to_navigations(
                           title => 'Titles',
                           description => 'texts sorted by title',

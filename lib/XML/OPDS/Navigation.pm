@@ -32,7 +32,31 @@ prepended on output.
 =head2 rel
 
 Defaults to C<subsection>. Permitted values: C<self>, C<start>, C<up>,
-C<subsection>. This list is a work in progress and probably incomplete.
+C<subsection>, C<search>.
+
+Additionally:
+
+C<new> and C<popular> will expand to L<http://opds-spec.org/sort/new> and
+L<http://opds-spec.org/sort/popular> as per spec paragraph 7.4.1.
+
+Acquisition Feeds using the "http://opds-spec.org/sort/new" relation SHOULD be
+ordered with the most recent items first. Acquisition Feeds using the "
+http://opds-spec.org/sort/popular" relation SHOULD be ordered with the most
+popular items first.
+
+C<featured> will expand to L<http://opds-spec.org/featured> as per 7.4.2
+
+C<recommended> will expand to L<http://opds-spec.org/recommended> as per 7.4.3
+
+C<shelf> will expand to L<http://opds-spec.org/shelf> and
+C<subscriptions> to L<http://opds-spec.org/subscriptions>.
+
+C<crawlable> will expand to L<http://opds-spec.org/crawlable>.
+
+This list is a work in progress and probably incomplete.
+
+Facets are not supported yet (patches welcome). Client support for
+facets is unclear. L<https://en.wikipedia.org/wiki/OPDS>.
 
 =head2 title
 
@@ -58,7 +82,8 @@ A L<DateTime> object with the time of last update.
 has id => (is => 'rw', isa => Str);
 
 has rel => (is => 'rw',
-            isa => Enum[qw/self start up subsection/],
+            isa => Enum[qw/self start up subsection search/,
+                        keys(%{ +{ __PACKAGE__->_rel_map } })],
             default => 'subsection');
 
 has title => (is => 'rw', isa => Str);
@@ -90,6 +115,10 @@ The navigation as L<XML::Atom::Link> object.
 
 Return the id or the URI.
 
+=head2 relationship
+
+[INTERNAL] Resolve the rel shortcuts.
+
 =head2 as_entry
 
 The navigation as L<XML::Atom::Entry> object.
@@ -98,16 +127,47 @@ The navigation as L<XML::Atom::Entry> object.
 
 sub link_type {
     my $self = shift;
+    if ($self->rel eq 'search') {
+        return "application/opensearchdescription+xml";
+    }
     my $kind = $self->acquisition ? 'acquisition' : 'navigation';
     return "application/atom+xml;profile=opds-catalog;kind=$kind";
+}
+
+sub _rel_map {
+    my %map = (
+               new => "http://opds-spec.org/sort/new",
+               popular => "http://opds-spec.org/sort/popular",
+               featured => "http://opds-spec.org/featured",
+               recommended => "http://opds-spec.org/recommended",
+               shelf => "http://opds-spec.org/shelf",
+               subscriptions => "http://opds-spec.org/subscriptions",
+               crawlable => "http://opds-spec.org/crawlable",
+              );
+}
+
+sub relationship {
+    my $self = shift;
+    my %mapped = $self->_rel_map;
+    my $rel = $self->rel;
+    return $mapped{$rel} || $rel;
 }
 
 sub as_link {
     my $self = shift;
     my $link = XML::Atom::Link->new(Version => 1.0);
-    $link->rel($self->rel);
+    $link->rel($self->relationship);
     $link->href($self->prefix . $self->href);
     $link->type($self->link_type);
+    # unclear
+    # If no appropriate relation is found, the Feeds SHOULD use a descriptive
+    # "atom:title" element and the "atom:link"s SHOULD use a descriptive "title"
+    # attribute.
+    if ($self->rel eq 'subsection') {
+        if (my $title = $self->title) {
+            $link->title($title);
+        }
+    }
     return $link;
 }
 
