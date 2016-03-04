@@ -4,7 +4,7 @@ use strict;
 use warnings FATAL => 'all';
 use Test::More;
 
-plan tests => 1;
+plan tests => 3;
 
 BEGIN {
     use_ok( 'XML::OPDS' ) || print "Bail out!\n";
