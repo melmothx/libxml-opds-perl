@@ -13,7 +13,7 @@ use XML::OPDS::Acquisition;
 
 =head1 NAME
 
-XML::OPDS - OPDS Feed creation
+XML::OPDS - OPDS (Open Publication Distribution System) feed creation
 
 =head1 VERSION
 
@@ -36,6 +36,11 @@ the title entries with some data, and have the feed back.
 
 The OPDS feeds are basically Atom feeds, hence this module uses
 L<XML::Atom> under the hood.
+
+Some features are not supported yet, but patches are welcome. Also
+keep in mind that the applications which are supposed to talk to your
+server have a level of support which varies from decent to "keep
+crashing".
 
 =head1 SYNOPSIS
 

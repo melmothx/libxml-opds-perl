@@ -15,18 +15,76 @@ XML::OPDS::Acquisition - Acquisition elements for OPDS feeds
 
 =head1 SETTERS/ACCESSORS
 
+The following accessors are read-only and are meant to be passed as an
+hash to the C<new> constructor.
+
+=head2 id
+
+Optional. The example specification uses uuid like
+C<urn:uuid:2853dacf-ed79-42f5-8e8a-a7bb3d1ae6a2>. If not provided, the
+C<href> (with the prefix if provided) will be used instead.
+
+=head2 prefix
+
+If provided, every uri will have this string prepended, so you can
+just pass URIs like '/path/to/file' and have them consistently turned
+to 'http://myserver.org/path/to/file' if you set this to
+'http://myserver.org'. See also L<XML::OPDS> C<prefix> method.
+
 =cut
 
 has id => (is => 'ro', isa => Str);
 
+has prefix => (is => 'ro', isa => Str, default => sub { '' });
+
+=head2 href
+
+The URI of the resource. Required.
+
+=cut
+
 has href => (is => 'ro', isa => Str, required => 1);
 
+=head2 title
+
+The title. Required.
+
+=cut
+
 has title => (is => 'ro', isa => Str, required => 1);
+
+=head2 files
+
+An arrayref with the download files. The prefix is added if set.
+
+=head1 OPTIONAL ATTRIBUTES
+
+The following attributes are optional and describe the publication.
 
 =head2 authors
 
 An arrayref of either scalars with names, or hashrefs with C<name> and
 C<uri> as keys. C<uri> is optional.
+
+=head2 summary
+
+Plain text.
+
+=head2 description
+
+HTML allowed.
+
+=head2 language
+
+=head2 issued
+
+The publication date.
+
+=head2 publisher
+
+=head2 updated
+
+A DateTime object with the time of the last update of the resource.
 
 =cut
 
@@ -47,6 +105,36 @@ has updated => (is => 'rw', isa => InstanceOf['DateTime'],
 
 has files => (is => 'ro', isa => ArrayRef[Str]);
 
+=head2 thumbnail
+
+The uri of the thumbnail
+
+=head2 image
+
+The uri of the image
+
+=head1 METHODS
+
+Usually they are for internal usage.
+
+=head2 identifier
+
+=head2 authors_as_links
+
+Return a list of L<XML::Atom::Person> objects from the C<authors>
+value.
+
+=head2 files_as_links
+
+Return a list of L<XML::Atom::Link> objects constructed from C<files>,
+C<image>, C<thumbnail>, with the appropriate C<rel> and C<type>.
+
+=head2 as_entry
+
+Return the acquisition L<XML::Atom::Entry> object.
+
+=cut
+
 has thumbnail => (is => 'ro', isa => Str);
 
 has image => (is => 'ro', isa => Str);
@@ -56,8 +144,6 @@ has _dc => (is => 'lazy',
             default => sub {
                 XML::Atom::Namespace->new(dc => 'http://purl.org/dc/elements/1.1/');
             });
-
-has prefix => (is => 'ro', isa => Str, default => sub { '' });
 
 sub identifier {
     my $self = shift;
