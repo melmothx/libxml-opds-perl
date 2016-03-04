@@ -258,7 +258,7 @@ sub atom {
         # if it's an acquisition feed, stuff the links in the feed,
         # but filter out the subsections. And probably other stuff as well.
         foreach my $link ($self->navigation_entries) {
-            my %rels = (up => 1, related => 1, alternate => 1);
+            my %rels = (related => 1, alternate => 1);
             $feed->add_link($link->as_link) if $rels{$link->rel};
         }
         foreach my $entry (@{$self->acquisitions}) {
