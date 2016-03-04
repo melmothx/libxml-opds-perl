@@ -13,8 +13,7 @@ unified_diff;
 my $feed = XML::OPDS->new(prefix => 'http://amusewiki.org');
 my $updated = DateTime->new(year => 2016, month => 3, day => 1);
 
-$feed->add_to_navigations(
-                          rel => 'self',
+$feed->add_to_navigations_new_level(
                           title => 'Root',
                           href => '/',
                           updated => $updated,
@@ -59,8 +58,7 @@ FEED
     eq_or_diff($feed->render, $expected, "prefixes ok");
 }
 
-$feed->add_to_navigations(
-                          rel => 'self',
+$feed->add_to_navigations_new_level(
                           title => 'Titles',
                           description => 'texts sorted by title',
                           href => '/titles',

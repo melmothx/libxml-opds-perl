@@ -152,9 +152,21 @@ Create a L<XML::OPDS::Acquisition> object inheriting the prefix.
 
 Call C<create_navigation> and add it to the C<navigations> stack.
 
+=head2 add_to_navigations_new_level(%args)
+
+Like C<add_to_navigations>, but it's meant to be used for
+C<rel:self> elements.
+
+The C<rel:self> attribute is injected in the arguments which are
+passed to C<create_navigation>.
+
 If a navigation with the attribute C<rel> set to C<self> was already
-added, the new one will become the new C<self>, while the old one will
-become an C<up> rel.
+present in the stack, the new one will become the new C<self>, while
+the old one will become an C<up> rel.
+
+Also, this will remove any existing navigation with the C<rel>
+attribute set to C<subsection>, given that you are creating a new
+level.
 
 This is designed to play well with chained actions (so you can reuse
 the object, stack selfs, and the result will be correct).
@@ -286,12 +298,23 @@ sub create_navigation {
 sub add_to_navigations {
     my $self = shift;
     my $navigation = $self->create_navigation(@_);
+    push @{$self->navigations}, $navigation;
+    return $navigation;
+}
+
+sub add_to_navigations_new_level {
+    my $self = shift;
+    my $navigation = $self->create_navigation(rel => 'self', @_);
     # turn the previous self in an "up" link.
     if ($navigation->rel eq 'self') {
-        foreach my $previous (grep { $_->rel eq 'self' } @{$self->navigations}) {
-            print "Turning " . $previous->href . " in up\n";
+        # new level, so remove the subsections
+        my @existing = grep { $_->rel ne 'subsection' } @{$self->navigations};
+        # promote the existing self to "up"
+        foreach my $previous (grep { $_->rel eq 'self' } @existing) {
             $previous->rel('up');
         }
+        # reset
+        $self->navigations(\@existing);
     }
     push @{$self->navigations}, $navigation;
     return $navigation;
