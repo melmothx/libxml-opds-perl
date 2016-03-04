@@ -42,11 +42,10 @@ keep in mind that the applications which are supposed to talk to your
 server have a level of support which varies from decent to "keep
 crashing".
 
+This is still very much a work in progress, but it's already
+generating valid and usable catalogs.
+
 =head1 SYNOPSIS
-
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
 
   use XML::OPDS;
   my $feed = XML::OPDS->new(prefix => 'http://amusewiki.org');
