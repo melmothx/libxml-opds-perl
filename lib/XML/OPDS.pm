@@ -24,18 +24,155 @@ Version 0.01
 our $VERSION = '0.01';
 
 
+=head1 DESCRIPTION
+
+This module facilitates the creation of OPDS feeds.
+
+The specifications can be found at L<http://opds-spec.org/> while the
+validator is at L<http://opds-validator.appspot.com/>.
+
+The idea is that it should be enough to pass the navigation links and
+the title entries with some data, and have the feed back.
+
+The OPDS feeds are basically Atom feeds, hence this module uses
+L<XML::Atom> under the hood.
+
 =head1 SYNOPSIS
 
 Quick summary of what the module does.
 
 Perhaps a little code snippet.
 
-    use XML::OPDS;
+  use XML::OPDS;
+  my $feed = XML::OPDS->new(prefix => 'http://amusewiki.org');
+  # add two links, self and start are mandatory.
+  $feed->add_to_navigations(
+                            rel => 'self',
+                            title => 'Root',
+                            href => '/',
+                           );
+  $feed->add_to_navigations(
+                            rel => 'start',
+                            title => 'Root',
+                            href => '/',
+                           );
+  # add a navigation for the title list, marking as leaf, where the
+  # download links can be retrieved.
+  $feed->add_to_navigations(
+                            title => 'Titles',
+                            description => 'texts sorted by title',
+                            href => '/titles',
+                            acquisition => 1,
+                           );
+  # and render
+  print $feed->render;
+  # you can reuse the object for leaf feeds (i.e. the acquistion
+  # feeds), pushing another self navigation, which will replace the
+  # previous one.
+  $feed->add_to_navigations(
+                            rel => 'self',
+                            title => 'Titles',
+                            description => 'texts sorted by title',
+                            href => '/titles',
+                            acquisition => 1,
+                           );
+  $feed->add_to_acquisitions(
+                             href => '/my/title',
+                             title => 'My title',
+                             files => [ '/my/title.epub' ],
+                            );
+  # and here we have an acquisition feed, because of the presence of
+  # the acquisition.
+  print $feed->render;
 
-    my $feed = XML::OPDS->new(title => 'OPDS root', ... );
-    my $xml = $feed->render;
+=head1 ENCODING
+
+Even if the module wants characters as input (decoded strings, not
+bytes), the output XML is an UTF-8 encoded string.
 
 =head1 SETTERS/ACCESSORS
+
+=head2 navigations
+
+Arrayref of L<XML::OPDS::Navigation> objects. An object with a rel
+C<self> (the feed itself) and one with the rel C<start> (the root
+feed) are mandatory. If not present, the module will crash while
+rendering the feed.
+
+=head2 acquisitions
+
+Arrayref of L<XML::OPDS::Acquisition> objects. If one or more objects
+are present, the feed will become an acquistion feed.
+
+=head2 author
+
+The producer of the feed. Defaults to this class name and version.
+
+=head2 author_uri
+
+The uri of the author. Defaults to L<http://amusewiki.org> (which is
+the home of this class).
+
+=head2 prefix
+
+Default to the empty string. On instances of this class, by itself has
+no effect. However, when calling C<add_to_acquisitions> and
+C<add_to_navigations>, it will be passed to the constructors of those
+objects.
+
+This is usually the hostname of the OPDS server. So you need just to
+pass, e.g. 'http://amusewiki.org' and have all the links prefixed by
+that (no slash mangling or adding is performed). If you are going to
+pass the full urls, leave it at the default.
+
+=head1 METHODS
+
+=head2 render
+
+Return the generated xml.
+
+=head2 create_navigation(%args)
+
+Create a L<XML::OPDS::Navigation> object inheriting the prefix.
+
+=head2 create_acquisition(%args)
+
+Create a L<XML::OPDS::Acquisition> object inheriting the prefix.
+
+=head2 add_to_navigations(%args)
+
+Call C<create_navigation> and add it to the C<navigations> stack.
+
+=head2 add_to_acquisitions(%args)
+
+Call C<create_acquisition> and add it to the C<acquisition> stack.
+
+=head1 INTERNAL METHODS
+
+=head2 start_navigation
+
+Return the last L<XML::OPDS::Navigation> object in the C<navigations>
+arrayref with a rel C<start>
+
+=head2 self_navigation
+
+Return the last L<XML::OPDS::Navigation> object in the C<navigations>
+arrayref with a rel C<self>
+
+=head2 navigation_entries
+
+Return a list of L<XML::OPDS::Navigation> objects excluding C<self>
+and C<start>.
+
+=head2 navigation_hash
+
+Return an hashref, where the keys are the C<rel> attributes of the
+navigation objects. The value is an object if the navigation is meant
+to be unique, or an arrayref of objects if not so.
+
+=head2 is_acquisition
+
+Return true if there are acquisition objects stacked.
 
 =cut
 
@@ -44,14 +181,6 @@ has acquisitions => (is => 'rw', isa => ArrayRef[InstanceOf['XML::OPDS::Acquisit
 has author => (is => 'rw', isa => Str, default => sub { __PACKAGE__ . ' ' . $VERSION });
 has author_uri => (is => 'rw', isa => Str, default => sub { 'http://amusewiki.org' });
 has prefix => (is => 'rw', isa => Str, default => sub { '' });
-
-=head1 METHODS
-
-=head2 render
-
-Return the generated xml.
-
-=cut
 
 sub start_navigation {
     return shift->navigation_hash->{start};
