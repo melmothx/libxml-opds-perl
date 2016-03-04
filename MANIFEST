@@ -1,0 +1,14 @@
+Changes
+lib/XML/OPDS.pm
+lib/XML/OPDS/Acquisition.pm
+lib/XML/OPDS/Navigation.pm
+Makefile.PL
+MANIFEST			This list of files
+README
+t/00-load.t
+t/basic.t
+t/boilerplate.t
+t/manifest.t
+t/pod-coverage.t
+t/pod.t
+t/stacking.t
