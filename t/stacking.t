@@ -10,26 +10,23 @@ use DateTime;
 
 unified_diff;
 
-my $feed = XML::OPDS->new(prefix => 'http://amusewiki.org');
-my $updated = DateTime->new(year => 2016, month => 3, day => 1);
+my $feed = XML::OPDS->new(prefix => 'http://amusewiki.org',
+                          updated => DateTime->new(year => 2016, month => 3, day => 1));
 
 $feed->add_to_navigations_new_level(
                           title => 'Root',
                           href => '/',
-                          updated => $updated,
                          );
 $feed->add_to_navigations(
                           rel => 'start',
                           title => 'Root',
                           href => '/',
-                          updated => $updated,
                          );
 $feed->add_to_navigations(
                           title => 'Titles',
                           description => 'texts sorted by title',
                           href => '/titles',
                           acquisition => 1,
-                          updated => $updated,
                          );
 {
     my $expected =<< 'FEED';
@@ -63,13 +60,11 @@ $feed->add_to_navigations_new_level(
                           description => 'texts sorted by title',
                           href => '/titles',
                           acquisition => 1,
-                          updated => $updated,
                          );
 $feed->add_to_acquisitions(
                            href => '/second/title',
                            title => 'Second title',
                            files => [ '/second/title.epub' ],
-                           updated => $updated,
                           );
 
 

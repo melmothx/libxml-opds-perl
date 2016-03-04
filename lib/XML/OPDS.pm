@@ -129,6 +129,11 @@ pass, e.g. 'http://amusewiki.org' and have all the links prefixed by
 that (no slash mangling or adding is performed). If you are going to
 pass the full urls, leave it at the default.
 
+=head2 updated
+
+Default to current timestamp. When calling C<create_navigation> or
+C<create_acquistion>, use this timestamp as default.
+
 =head1 METHODS
 
 =head2 render
@@ -198,6 +203,7 @@ has acquisitions => (is => 'rw', isa => ArrayRef[InstanceOf['XML::OPDS::Acquisit
 has author => (is => 'rw', isa => Str, default => sub { __PACKAGE__ . ' ' . $VERSION });
 has author_uri => (is => 'rw', isa => Str, default => sub { 'http://amusewiki.org' });
 has prefix => (is => 'rw', isa => Str, default => sub { '' });
+has updated => (is => 'rw', isa => Object, default => sub { DateTime->now });
 
 sub navigation_entries {
     my $self = shift;
@@ -291,7 +297,9 @@ sub render {
 
 sub create_navigation {
     my $self = shift;
-    return XML::OPDS::Navigation->new(prefix => $self->prefix, @_);
+    return XML::OPDS::Navigation->new(prefix => $self->prefix,
+                                      updated => $self->updated,
+                                      @_);
 }
 
 sub add_to_navigations {
@@ -321,7 +329,9 @@ sub add_to_navigations_new_level {
 
 sub create_acquisition {
     my $self = shift;
-    return XML::OPDS::Acquisition->new(prefix => $self->prefix, @_);
+    return XML::OPDS::Acquisition->new(prefix => $self->prefix,
+                                       updated => $self->updated,
+                                       @_);
 }
 
 sub add_to_acquisitions {
