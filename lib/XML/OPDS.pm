@@ -183,8 +183,9 @@ Call C<create_acquisition> and add it to the C<acquisition> stack.
 
 =head2 navigation_entries
 
-Return a list of L<XML::OPDS::Navigation> objects excluding C<self>
-and C<start>.
+Return a list of L<XML::OPDS::Navigation> objects excluding unique
+relationships like C<self>, C<start>, C<up>, C<previous>, C<next>,
+C<first>, C<last>.
 
 =head2 navigation_hash
 
@@ -224,12 +225,19 @@ sub navigation_hash {
     my $navs = $self->navigations;
     die "Missing navigations" unless $navs && @$navs;
     my %out;
+    my %uniques = (
+                   start => 1,
+                   self => 1,
+                   up => 1,
+                   next => 1,
+                   previous => 1,
+                   first => 1,
+                   last => 1,
+                  );
     foreach my $nav (@$navs) {
         my $rel = $nav->rel;
         # uniques
-        if ($rel eq 'start' or
-            $rel eq 'self'  or
-            $rel eq 'up') {
+        if ($uniques{$rel}) {
             $out{$rel} = $nav;
         }
         else {
@@ -252,12 +260,19 @@ sub is_acquisition {
 sub atom {
     my $self = shift;
     my $feed = XML::Atom::Feed->new(Version => 1.0);
-    my $main = $self->navigation_hash->{'self'};
+    my $navs = $self->navigation_hash;
+    my $main = delete $navs->{self};
     die "Missing self navigation element!" unless $main;
     $feed->id($main->identifier);
     $feed->add_link($main->as_link);
-    foreach my $unique (qw/up start/) {
-        if (my $nav = $self->navigation_hash->{$unique}) {
+    my @nav_entries;
+    foreach my $rel (sort keys %$navs) {
+        # use only the unique
+        my $nav = delete $navs->{$rel};
+        if (ref($nav) eq 'ARRAY') {
+            push @nav_entries, @$nav;
+        }
+        else {
             $feed->add_link($nav->as_link);
         }
     }
@@ -274,7 +289,7 @@ sub atom {
     if ($self->is_acquisition) {
         # if it's an acquisition feed, stuff the links in the feed,
         # but filter out the subsections. And probably other stuff as well.
-        foreach my $link ($self->navigation_entries) {
+        foreach my $link (@nav_entries) {
             my %rels = (related => 1, alternate => 1);
             $feed->add_link($link->as_link) if $rels{$link->rel};
         }
@@ -284,7 +299,7 @@ sub atom {
     }
     else {
         # othewise use the links to create entries
-        foreach my $entry ($self->navigation_entries) {
+        foreach my $entry (@nav_entries) {
             $feed->add_entry($entry->as_entry);
         }
     }

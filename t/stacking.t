@@ -74,6 +74,14 @@ $feed->add_to_navigations_new_level(
                           href => '/titles',
                           acquisition => 1,
                          );
+$feed->add_to_navigations(
+                          rel => 'next',
+                          title => 'Titles',
+                          description => 'texts sorted by title',
+                          href => '/titles/2',
+                          acquisition => 1,
+                         );
+
 $feed->add_to_acquisitions(
                            href => '/second/title',
                            title => 'Second title',
@@ -87,8 +95,9 @@ $feed->add_to_acquisitions(
 <feed xmlns="http://www.w3.org/2005/Atom">
   <id>http://amusewiki.org/titles</id>
   <link rel="self" href="http://amusewiki.org/titles" type="application/atom+xml;profile=opds-catalog;kind=acquisition"/>
-  <link rel="up" href="http://amusewiki.org/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
+  <link rel="next" href="http://amusewiki.org/titles/2" type="application/atom+xml;profile=opds-catalog;kind=acquisition"/>
   <link rel="start" href="http://amusewiki.org/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
+  <link rel="up" href="http://amusewiki.org/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
   <title>Titles</title>
   <updated>2016-03-01T00:00:00</updated>
   <author>
