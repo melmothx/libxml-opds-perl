@@ -48,13 +48,20 @@ $feed->add_to_navigations(
     <uri>http://amusewiki.org</uri>
   </author>
   <entry>
+    <title>Search</title>
+    <id>http://amusewiki.org/search</id>
+    <content/>
+    <updated>2016-03-01T00:00:00</updated>
+    <link rel="search" href="http://amusewiki.org/search" type="application/opensearchdescription+xml"/>
+  </entry>
+  <entry>
     <title>Titles</title>
     <id>http://amusewiki.org/titles</id>
     <content type="xhtml">
       <div xmlns="http://www.w3.org/1999/xhtml">texts sorted by title</div>
     </content>
     <updated>2016-03-01T00:00:00</updated>
-    <link rel="subsection" href="http://amusewiki.org/titles" type="application/atom+xml;profile=opds-catalog;kind=acquisition"/>
+    <link rel="subsection" href="http://amusewiki.org/titles" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Titles"/>
   </entry>
 </feed>
 FEED

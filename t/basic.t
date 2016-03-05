@@ -99,7 +99,7 @@ my $title_two = XML::OPDS::Acquisition->new(
       <div xmlns="http://www.w3.org/1999/xhtml">texts sorted by title</div>
     </content>
     <updated>2016-03-01T00:00:00</updated>
-    <link rel="subsection" href="/titles" type="application/atom+xml;profile=opds-catalog;kind=acquisition"/>
+    <link rel="subsection" href="/titles" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Titles"/>
   </entry>
   <entry>
     <title>Topics</title>
@@ -108,7 +108,7 @@ my $title_two = XML::OPDS::Acquisition->new(
       <div xmlns="http://www.w3.org/1999/xhtml">texts sorted by topics</div>
     </content>
     <updated>2016-03-01T00:00:00</updated>
-    <link rel="subsection" href="/topics" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
+    <link rel="subsection" href="/topics" type="application/atom+xml;profile=opds-catalog;kind=navigation" title="Topics"/>
   </entry>
 </feed>
 FEED
