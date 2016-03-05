@@ -352,9 +352,6 @@ Please report any bugs or feature requests to C<bug-xml-opds at rt.cpan.org>, or
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=XML-OPDS>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
-
-
-
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
@@ -370,23 +367,11 @@ You can also look for information at:
 
 L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=XML-OPDS>
 
-=item * AnnoCPAN: Annotated CPAN documentation
+=item * MetaCPAN
 
-L<http://annocpan.org/dist/XML-OPDS>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/XML-OPDS>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/XML-OPDS/>
+L<http://metacpan.org/pod/XML::OPDS>
 
 =back
-
-
-=head1 ACKNOWLEDGEMENTS
-
 
 =head1 LICENSE AND COPYRIGHT
 
