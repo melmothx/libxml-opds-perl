@@ -25,4 +25,13 @@ WriteMakefile(
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'XML-OPDS-*' },
+    META_MERGE => {
+                   resources => {
+                                 repository => 'https://github.com/melmothx/libxml-opds-perl',
+                                 homepage => 'http://amusewiki.org',
+                                 x_IRC => 'irc://chat.freenode.net/#amusewiki',
+                                 x_WebIRC => 'https://webchat.freenode.net/?channels=#amusewiki',
+                                },
+                  },
+
 );

@@ -1,16 +1,15 @@
 XML-OPDS
 
-The README is used to introduce the module and provide instructions on
-how to install the module, any machine dependencies it may have (for
-example C compilers and installed libraries) and any other information
-that should be provided before the module is installed.
+This module facilitates the creation of OPDS feeds.
 
-A README file is required for CPAN modules since CPAN extracts the README
-file from a module distribution so that people browsing the archive
-can use it to get an idea of the module's uses. It is usually a good idea
-to provide version information here so that people can decide whether
-fixes for the module are worth downloading.
+The specifications can be found at http://opds-spec.org while the
+validator is at http://opds-validator.appspot.com
 
+The idea is that it should be enough to pass the navigation links and
+the title entries with some data, and have the feed back.
+
+The OPDS feeds are basically Atom feeds, hence this module uses
+XML::Atom under the hood.
 
 INSTALLATION
 
@@ -27,21 +26,6 @@ After installing, you can find documentation for this module with the
 perldoc command.
 
     perldoc XML::OPDS
-
-You can also look for information at:
-
-    RT, CPAN's request tracker (report bugs here)
-        http://rt.cpan.org/NoAuth/Bugs.html?Dist=XML-OPDS
-
-    AnnoCPAN, Annotated CPAN documentation
-        http://annocpan.org/dist/XML-OPDS
-
-    CPAN Ratings
-        http://cpanratings.perl.org/d/XML-OPDS
-
-    Search CPAN
-        http://search.cpan.org/dist/XML-OPDS/
-
 
 LICENSE AND COPYRIGHT
 
