@@ -131,6 +131,7 @@ FEED
     <name>XML::OPDS 0.01</name>
     <uri>http://amusewiki.org</uri>
   </author>
+  <fh:complete xmlns:fh="http://purl.org/syndication/history/1.0"></fh:complete>
   <entry>
     <id>/first/title</id>
     <title>First title</title>

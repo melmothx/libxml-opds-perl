@@ -206,6 +206,12 @@ has author_uri => (is => 'rw', isa => Str, default => sub { 'http://amusewiki.or
 has prefix => (is => 'rw', isa => Str, default => sub { '' });
 has updated => (is => 'rw', isa => Object, default => sub { DateTime->now });
 
+has _fh => (is => 'lazy',
+            isa => Object,
+            default => sub {
+                XML::Atom::Namespace->new(fh => 'http://purl.org/syndication/history/1.0');
+            });
+
 sub navigation_entries {
     my $self = shift;
     my $hash = $self->navigation_hash;
@@ -257,6 +263,18 @@ sub is_acquisition {
     }
 }
 
+sub _is_paged {
+    my $self = shift;
+    my $partial = 0;
+    foreach my $nav (@{$self->navigations}) {
+        if ($nav->rel =~ m/\A(next|previous|first|last)\z/) {
+            $partial = 1;
+            last;
+        }
+    }
+    return $partial;
+}
+
 sub atom {
     my $self = shift;
     my $feed = XML::Atom::Feed->new(Version => 1.0);
@@ -292,6 +310,9 @@ sub atom {
         foreach my $link (@nav_entries) {
             my %rels = (related => 1, alternate => 1);
             $feed->add_link($link->as_link) if $rels{$link->rel};
+        }
+        unless ($self->_is_paged) {
+            $feed->set($self->_fh, complete => undef);
         }
         foreach my $entry (@{$self->acquisitions}) {
             $feed->add_entry($entry->as_entry);
