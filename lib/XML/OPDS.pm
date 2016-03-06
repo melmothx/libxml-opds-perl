@@ -79,8 +79,15 @@ generating valid and usable catalogs.
                             title => 'Titles',
                             description => 'texts sorted by title',
                             href => '/titles',
-                            acquisition => 1,
+
                            );
+  # or, implicitely setting the self rel and cleaning the navigation
+  # stash, keeping the meta
+  $feed->add_to_navigations_new_level(
+                                      title => 'Titles',
+                                      acquisition => 1,
+                                      href => '/titles',
+                                     );
   $feed->add_to_acquisitions(
                              href => '/my/title',
                              title => 'My title',
