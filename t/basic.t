@@ -79,7 +79,9 @@ my $title_two = XML::OPDS::Acquisition->new(
 
 
 {
-    my $feed = XML::OPDS->new(navigations => [$root, $start, $titles, $topics ]);
+    my $feed = XML::OPDS->new(navigations => [$root, $start, $titles, $topics ],
+                              author => 'XML::OPDS 0.01',
+                             );
 
     ok ($feed, "Object created ok");
     my $expected =<< 'FEED';

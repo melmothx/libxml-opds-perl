@@ -12,6 +12,7 @@ use DateTime::Format::RFC3339;
 unified_diff;
 
 my $feed = XML::OPDS->new(prefix => 'http://amusewiki.org',
+                          author => 'XML::OPDS 0.01',
                           updated => DateTime->new(year => 2016, month => 3, day => 1,
                                                    time_zone => 'Europe/Belgrade'));
 
