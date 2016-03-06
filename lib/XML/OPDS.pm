@@ -135,6 +135,14 @@ pass the full urls, leave it at the default.
 Default to current timestamp. When calling C<create_navigation> or
 C<create_acquistion>, use this timestamp as default.
 
+=head2 logo
+
+The feed logo. If prefix is set, prepend it.
+
+=head2 icon
+
+The feed icon. If prefix is set, prepend it.
+
 =head1 METHODS
 
 =head2 render
@@ -206,6 +214,9 @@ has author => (is => 'rw', isa => Str, default => sub { __PACKAGE__ . ' ' . $VER
 has author_uri => (is => 'rw', isa => Str, default => sub { 'http://amusewiki.org' });
 has prefix => (is => 'rw', isa => Str, default => sub { '' });
 has updated => (is => 'rw', isa => Object, default => sub { DateTime->now });
+has icon => (is => 'rw', isa => Str, default => sub { '' });
+has logo => (is => 'rw', isa => Str, default => sub { '' });
+
 has _dt_formatter => (is => 'ro', isa => Object, default => sub { DateTime::Format::RFC3339->new });
 has _fh => (is => 'ro',
             isa => Object,
@@ -297,6 +308,12 @@ sub atom {
     }
     $feed->title($main->title);
     $feed->updated($self->_dt_formatter->format_datetime($main->updated));
+    if (my $icon = $self->icon) {
+        $feed->icon($self->prefix . $icon);
+    }
+    if (my $logo = $self->logo) {
+        $feed->logo($self->prefix . $logo);
+    }
     if (my $author_name = $self->author) {
         my $author = XML::Atom::Person->new(Version => 1.0);
         $author->name($author_name);

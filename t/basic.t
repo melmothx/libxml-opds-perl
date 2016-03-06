@@ -81,6 +81,8 @@ my $title_two = XML::OPDS::Acquisition->new(
 {
     my $feed = XML::OPDS->new(navigations => [$root, $start, $titles, $topics ],
                               author => 'XML::OPDS 0.01',
+                              logo => '/test.png',
+                              icon => '/favicon.ico',
                              );
 
     ok ($feed, "Object created ok");
@@ -92,6 +94,8 @@ my $title_two = XML::OPDS::Acquisition->new(
   <link rel="start" href="/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
   <title>Root</title>
   <updated>2016-03-01T00:00:00+01:00</updated>
+  <icon>/favicon.ico</icon>
+  <logo>/test.png</logo>
   <author>
     <name>XML::OPDS 0.01</name>
     <uri>http://amusewiki.org</uri>
@@ -131,6 +135,8 @@ FEED
   <link rel="up" href="/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
   <title>Titles</title>
   <updated>2016-03-01T00:00:00+01:00</updated>
+  <icon>/favicon.ico</icon>
+  <logo>/test.png</logo>
   <author>
     <name>XML::OPDS 0.01</name>
     <uri>http://amusewiki.org</uri>
