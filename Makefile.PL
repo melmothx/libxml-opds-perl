@@ -22,6 +22,8 @@ WriteMakefile(
                   'Moo' => 1,
                   'Type::Tiny' => 1,
                   'XML::Atom' => 0.41,
+                  'DateTime' => 0,
+                  'DateTime::Format::RFC3339' => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'XML-OPDS-*' },

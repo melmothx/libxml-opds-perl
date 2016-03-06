@@ -5,6 +5,7 @@ use warnings FATAL => 'all';
 use Types::Standard qw/Str Object ArrayRef InstanceOf/;
 use Moo;
 use DateTime;
+use DateTime::Format::RFC3339;
 use XML::Atom;
 use XML::Atom::Feed;
 use XML::Atom::Entry;
@@ -17,11 +18,11 @@ XML::OPDS - OPDS (Open Publication Distribution System) feed creation
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 
 =head1 DESCRIPTION
@@ -205,8 +206,8 @@ has author => (is => 'rw', isa => Str, default => sub { __PACKAGE__ . ' ' . $VER
 has author_uri => (is => 'rw', isa => Str, default => sub { 'http://amusewiki.org' });
 has prefix => (is => 'rw', isa => Str, default => sub { '' });
 has updated => (is => 'rw', isa => Object, default => sub { DateTime->now });
-
-has _fh => (is => 'lazy',
+has _dt_formatter => (is => 'ro', isa => Object, default => sub { DateTime::Format::RFC3339->new });
+has _fh => (is => 'ro',
             isa => Object,
             default => sub {
                 XML::Atom::Namespace->new(fh => 'http://purl.org/syndication/history/1.0');
@@ -295,7 +296,7 @@ sub atom {
         }
     }
     $feed->title($main->title);
-    $feed->updated($main->updated);
+    $feed->updated($self->_dt_formatter->format_datetime($main->updated));
     if (my $author_name = $self->author) {
         my $author = XML::Atom::Person->new(Version => 1.0);
         $author->name($author_name);

@@ -1,5 +1,10 @@
 Revision history for XML-OPDS
 
+0.02 2016-03-06
+
+ - Added support for paging
+ - Enforce RFC3339 format for updated fields
+
 0.01 2016-03-05
 
  - Initial (and working) release.

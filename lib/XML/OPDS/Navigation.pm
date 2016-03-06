@@ -2,7 +2,7 @@ package XML::OPDS::Navigation;
 
 use strict;
 use warnings FATAL => 'all';
-use Types::Standard qw/Str Enum Bool InstanceOf/;
+use Types::Standard qw/Str Enum Bool InstanceOf Object/;
 use Moo;
 use DateTime;
 use XML::Atom::Link;
@@ -100,6 +100,8 @@ has updated => (is => 'rw', isa => InstanceOf['DateTime'],
 
 has prefix => (is => 'rw', isa => Str, default => sub { '' });
 
+has _dt_formatter => (is => 'ro', isa => Object, default => sub { DateTime::Format::RFC3339->new });
+
 =head1 METHODS
 
 The are mostly internals and used by L<XML::OPDS>
@@ -183,7 +185,7 @@ sub as_entry {
     $item->title($self->title);
     $item->id($self->identifier);
     $item->content($self->description);
-    $item->updated($self->updated);
+    $item->updated($self->_dt_formatter->format_datetime($self->updated));
     $item->add_link($self->as_link);
     return $item;
 }

@@ -7,11 +7,14 @@ use Test::Differences;
 use Data::Dumper;
 use XML::OPDS;
 use DateTime;
+use DateTime::Format::RFC3339;
 
 unified_diff;
 
 my $feed = XML::OPDS->new(prefix => 'http://amusewiki.org',
-                          updated => DateTime->new(year => 2016, month => 3, day => 1));
+                          updated => DateTime->new(year => 2016, month => 3, day => 1,
+                                                   time_zone => 'Europe/Belgrade'));
+
 
 $feed->add_to_navigations_new_level(
                           title => 'Root',
@@ -42,7 +45,7 @@ $feed->add_to_navigations(
   <link rel="self" href="http://amusewiki.org/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
   <link rel="start" href="http://amusewiki.org/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
   <title>Root</title>
-  <updated>2016-03-01T00:00:00</updated>
+  <updated>2016-03-01T00:00:00+01:00</updated>
   <author>
     <name>XML::OPDS 0.01</name>
     <uri>http://amusewiki.org</uri>
@@ -51,7 +54,7 @@ $feed->add_to_navigations(
     <title>Search</title>
     <id>http://amusewiki.org/search</id>
     <content/>
-    <updated>2016-03-01T00:00:00</updated>
+    <updated>2016-03-01T00:00:00+01:00</updated>
     <link rel="search" href="http://amusewiki.org/search" type="application/opensearchdescription+xml"/>
   </entry>
   <entry>
@@ -60,7 +63,7 @@ $feed->add_to_navigations(
     <content type="xhtml">
       <div xmlns="http://www.w3.org/1999/xhtml">texts sorted by title</div>
     </content>
-    <updated>2016-03-01T00:00:00</updated>
+    <updated>2016-03-01T00:00:00+01:00</updated>
     <link rel="subsection" href="http://amusewiki.org/titles" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Titles"/>
   </entry>
 </feed>
@@ -99,7 +102,7 @@ $feed->add_to_acquisitions(
   <link rel="start" href="http://amusewiki.org/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
   <link rel="up" href="http://amusewiki.org/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
   <title>Titles</title>
-  <updated>2016-03-01T00:00:00</updated>
+  <updated>2016-03-01T00:00:00+01:00</updated>
   <author>
     <name>XML::OPDS 0.01</name>
     <uri>http://amusewiki.org</uri>
@@ -107,7 +110,7 @@ $feed->add_to_acquisitions(
   <entry>
     <id>http://amusewiki.org/second/title</id>
     <title>Second title</title>
-    <updated>2016-03-01T00:00:00</updated>
+    <updated>2016-03-01T00:00:00+01:00</updated>
     <link rel="http://opds-spec.org/acquisition" href="http://amusewiki.org/second/title.epub" type="application/epub+zip"/>
   </entry>
 </feed>

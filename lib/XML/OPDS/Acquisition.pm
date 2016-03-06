@@ -105,6 +105,8 @@ has updated => (is => 'rw', isa => InstanceOf['DateTime'],
 
 has files => (is => 'ro', isa => ArrayRef[Str], default => sub { [] });
 
+has _dt_formatter => (is => 'ro', isa => Object, default => sub { DateTime::Format::RFC3339->new });
+
 =head2 thumbnail
 
 The uri of the thumbnail
@@ -222,7 +224,7 @@ sub as_entry {
     my $entry = XML::Atom::Entry->new(Version => 1.0);
     $entry->id($self->identifier);
     $entry->title($self->title);
-    $entry->updated($self->updated);
+    $entry->updated($self->_dt_formatter->format_datetime($self->updated));
     if (my $lang = $self->language) {
         $entry->set($self->_dc, language => $lang);
     }

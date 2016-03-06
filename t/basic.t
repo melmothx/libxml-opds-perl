@@ -8,10 +8,12 @@ use XML::OPDS;
 use XML::OPDS::Navigation;
 use XML::OPDS::Acquisition;
 use DateTime;
+use DateTime::Format::RFC3339;
 
 unified_diff;
 
-my $updated = DateTime->new(year => 2016, month => 3, day => 1);
+my $updated = DateTime->new(year => 2016, month => 3, day => 1,
+                            time_zone => 'Europe/Berlin');
 
 my $root = XML::OPDS::Navigation->new(
                                       rel => 'self',
@@ -87,7 +89,7 @@ my $title_two = XML::OPDS::Acquisition->new(
   <link rel="self" href="/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
   <link rel="start" href="/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
   <title>Root</title>
-  <updated>2016-03-01T00:00:00</updated>
+  <updated>2016-03-01T00:00:00+01:00</updated>
   <author>
     <name>XML::OPDS 0.01</name>
     <uri>http://amusewiki.org</uri>
@@ -98,7 +100,7 @@ my $title_two = XML::OPDS::Acquisition->new(
     <content type="xhtml">
       <div xmlns="http://www.w3.org/1999/xhtml">texts sorted by title</div>
     </content>
-    <updated>2016-03-01T00:00:00</updated>
+    <updated>2016-03-01T00:00:00+01:00</updated>
     <link rel="subsection" href="/titles" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Titles"/>
   </entry>
   <entry>
@@ -107,7 +109,7 @@ my $title_two = XML::OPDS::Acquisition->new(
     <content type="xhtml">
       <div xmlns="http://www.w3.org/1999/xhtml">texts sorted by topics</div>
     </content>
-    <updated>2016-03-01T00:00:00</updated>
+    <updated>2016-03-01T00:00:00+01:00</updated>
     <link rel="subsection" href="/topics" type="application/atom+xml;profile=opds-catalog;kind=navigation" title="Topics"/>
   </entry>
 </feed>
@@ -126,7 +128,7 @@ FEED
   <link rel="start" href="/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
   <link rel="up" href="/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
   <title>Titles</title>
-  <updated>2016-03-01T00:00:00</updated>
+  <updated>2016-03-01T00:00:00+01:00</updated>
   <author>
     <name>XML::OPDS 0.01</name>
     <uri>http://amusewiki.org</uri>
@@ -135,7 +137,7 @@ FEED
   <entry>
     <id>/first/title</id>
     <title>First title</title>
-    <updated>2016-03-01T00:00:00</updated>
+    <updated>2016-03-01T00:00:00+01:00</updated>
     <dc:language xmlns:dc="http://purl.org/dc/elements/1.1/">en</dc:language>
     <author>
       <name>pippo</name>
@@ -155,7 +157,7 @@ FEED
   <entry>
     <id>/second/title</id>
     <title>Second title</title>
-    <updated>2016-03-01T00:00:00</updated>
+    <updated>2016-03-01T00:00:00+01:00</updated>
     <link rel="http://opds-spec.org/acquisition" href="/second/title.epub" type="application/epub+zip"/>
   </entry>
 </feed>
