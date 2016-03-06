@@ -1,0 +1,38 @@
+Source: libxml-opds-perl
+Section: perl
+Priority: optional
+Maintainer: Marco Pessotto <melmothx@gmail.com>
+Build-Depends: debhelper (>= 9)
+Build-Depends-Indep: libdatetime-format-rfc3339-perl,
+ libdatetime-perl,
+ libmoo-perl (>= 1),
+ libtest-differences-perl,
+ libtype-tiny-perl (>= 1),
+ libxml-atom-perl (>= 0.41),
+ perl
+Standards-Version: 3.9.6
+Homepage: https://metacpan.org/release/XML-OPDS
+
+Package: libxml-opds-perl
+Architecture: all
+Depends: ${misc:Depends}, ${perl:Depends},
+ libdatetime-format-rfc3339-perl,
+ libdatetime-perl,
+ libmoo-perl (>= 1),
+ libtype-tiny-perl (>= 1),
+ libxml-atom-perl (>= 0.41)
+Description: OPDS (Open Publication Distribution System) feed creation
+ XML::OPDS facilitates the creation of OPDS feeds.
+ .
+ The specifications can be found at http://opds-spec.org/ while the validator
+ is at http://opds-validator.appspot.com/.
+ .
+ The idea is that it should be enough to pass the navigation links and the
+ title entries with some data, and have the feed back.
+ .
+ The OPDS feeds are basically Atom feeds, hence this module uses XML::Atom
+ under the hood.
+ .
+ Some features are not supported yet, but patches are welcome. Also keep in
+ mind that the applications which are supposed to talk to your server have a
+ level of support which varies from decent to "keep crashing".
