@@ -1,5 +1,9 @@
 Revision history for XML-OPDS
 
+0.03 2016-03-06
+
+ - Added support for logo and icon
+
 0.02 2016-03-06
 
  - Added support for paging
