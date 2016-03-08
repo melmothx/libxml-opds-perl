@@ -85,7 +85,7 @@ has rel => (is => 'rw',
             isa => Enum[qw/self start up subsection search/,
                         qw/first last previous next/, # RFC 5005
                         keys(%{ +{ __PACKAGE__->_rel_map } })],
-            default => 'subsection');
+            default => sub { 'subsection' });
 
 has title => (is => 'rw', isa => Str);
 
