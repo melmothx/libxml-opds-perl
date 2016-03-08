@@ -1,3 +1,9 @@
+libxml-opds-perl (0.04-1) unstable; urgency=medium
+
+  * New release
+
+ -- Marco Pessotto <melmothx@gmail.com>  Tue, 08 Mar 2016 09:08:33 +0100
+
 libxml-opds-perl (0.03-1) unstable; urgency=low
 
   * Initial Release.
