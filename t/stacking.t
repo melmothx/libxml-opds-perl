@@ -33,6 +33,13 @@ $feed->add_to_navigations(
                           href => '/search',
                          );
 $feed->add_to_navigations(
+                          rel => 'crawlable',
+                          title => 'Full',
+                          href => '/crawlable',
+                         );
+
+
+$feed->add_to_navigations(
                           title => 'Titles',
                           description => 'texts sorted by title',
                           href => '/titles',
@@ -43,21 +50,16 @@ $feed->add_to_navigations(
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <id>http://amusewiki.org/</id>
-  <link rel="self" href="http://amusewiki.org/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
-  <link rel="start" href="http://amusewiki.org/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
+  <link rel="self" href="http://amusewiki.org/" type="application/atom+xml;profile=opds-catalog;kind=navigation" title="Root"/>
+  <link rel="http://opds-spec.org/crawlable" href="http://amusewiki.org/crawlable" type="application/atom+xml;profile=opds-catalog;kind=navigation" title="Full"/>
+  <link rel="search" href="http://amusewiki.org/search" type="application/opensearchdescription+xml" title="Search"/>
+  <link rel="start" href="http://amusewiki.org/" type="application/atom+xml;profile=opds-catalog;kind=navigation" title="Root"/>
   <title>Root</title>
   <updated>2016-03-01T00:00:00+01:00</updated>
   <author>
     <name>XML::OPDS 0.01</name>
     <uri>http://amusewiki.org</uri>
   </author>
-  <entry>
-    <title>Search</title>
-    <id>http://amusewiki.org/search</id>
-    <content/>
-    <updated>2016-03-01T00:00:00+01:00</updated>
-    <link rel="search" href="http://amusewiki.org/search" type="application/opensearchdescription+xml"/>
-  </entry>
   <entry>
     <title>Titles</title>
     <id>http://amusewiki.org/titles</id>
@@ -98,10 +100,12 @@ $feed->add_to_acquisitions(
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <id>http://amusewiki.org/titles</id>
-  <link rel="self" href="http://amusewiki.org/titles" type="application/atom+xml;profile=opds-catalog;kind=acquisition"/>
-  <link rel="next" href="http://amusewiki.org/titles/2" type="application/atom+xml;profile=opds-catalog;kind=acquisition"/>
-  <link rel="start" href="http://amusewiki.org/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
-  <link rel="up" href="http://amusewiki.org/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
+  <link rel="self" href="http://amusewiki.org/titles" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Titles"/>
+  <link rel="http://opds-spec.org/crawlable" href="http://amusewiki.org/crawlable" type="application/atom+xml;profile=opds-catalog;kind=navigation" title="Full"/>
+  <link rel="next" href="http://amusewiki.org/titles/2" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Titles"/>
+  <link rel="search" href="http://amusewiki.org/search" type="application/opensearchdescription+xml" title="Search"/>
+  <link rel="start" href="http://amusewiki.org/" type="application/atom+xml;profile=opds-catalog;kind=navigation" title="Root"/>
+  <link rel="up" href="http://amusewiki.org/" type="application/atom+xml;profile=opds-catalog;kind=navigation" title="Root"/>
   <title>Titles</title>
   <updated>2016-03-01T00:00:00+01:00</updated>
   <author>

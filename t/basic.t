@@ -90,8 +90,8 @@ my $title_two = XML::OPDS::Acquisition->new(
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <id>/</id>
-  <link rel="self" href="/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
-  <link rel="start" href="/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
+  <link rel="self" href="/" type="application/atom+xml;profile=opds-catalog;kind=navigation" title="Root"/>
+  <link rel="start" href="/" type="application/atom+xml;profile=opds-catalog;kind=navigation" title="Root"/>
   <title>Root</title>
   <updated>2016-03-01T00:00:00+01:00</updated>
   <icon>/favicon.ico</icon>
@@ -130,9 +130,9 @@ FEED
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <id>/titles</id>
-  <link rel="self" href="/titles" type="application/atom+xml;profile=opds-catalog;kind=acquisition"/>
-  <link rel="start" href="/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
-  <link rel="up" href="/" type="application/atom+xml;profile=opds-catalog;kind=navigation"/>
+  <link rel="self" href="/titles" type="application/atom+xml;profile=opds-catalog;kind=acquisition" title="Titles"/>
+  <link rel="start" href="/" type="application/atom+xml;profile=opds-catalog;kind=navigation" title="Root"/>
+  <link rel="up" href="/" type="application/atom+xml;profile=opds-catalog;kind=navigation" title="Root"/>
   <title>Titles</title>
   <updated>2016-03-01T00:00:00+01:00</updated>
   <icon>/favicon.ico</icon>

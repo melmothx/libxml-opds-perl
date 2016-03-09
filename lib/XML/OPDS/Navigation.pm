@@ -162,14 +162,8 @@ sub as_link {
     $link->rel($self->relationship);
     $link->href($self->prefix . $self->href);
     $link->type($self->link_type);
-    # unclear
-    # If no appropriate relation is found, the Feeds SHOULD use a descriptive
-    # "atom:title" element and the "atom:link"s SHOULD use a descriptive "title"
-    # attribute.
-    if ($self->rel eq 'subsection') {
-        if (my $title = $self->title) {
-            $link->title($title);
-        }
+    if (my $title = $self->title) {
+        $link->title($title);
     }
     return $link;
 }

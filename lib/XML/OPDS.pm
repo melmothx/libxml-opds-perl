@@ -258,6 +258,8 @@ sub navigation_hash {
                    previous => 1,
                    first => 1,
                    last => 1,
+                   search => 1,
+                   crawlable => 1,
                   );
     foreach my $nav (@$navs) {
         my $rel = $nav->rel;
