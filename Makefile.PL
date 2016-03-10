@@ -24,6 +24,8 @@ WriteMakefile(
                   'XML::Atom' => 0.41,
                   'DateTime' => 0,
                   'DateTime::Format::RFC3339' => 0,
+                  'Data::Page' => 0,
+                  'URI' => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'XML-OPDS-*' },

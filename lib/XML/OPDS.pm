@@ -2,7 +2,7 @@ package XML::OPDS;
 
 use strict;
 use warnings FATAL => 'all';
-use Types::Standard qw/Str Object ArrayRef InstanceOf/;
+use Types::Standard qw/Str Object ArrayRef InstanceOf Maybe Int/;
 use Moo;
 use DateTime;
 use DateTime::Format::RFC3339;
@@ -11,6 +11,7 @@ use XML::Atom::Feed;
 use XML::Atom::Entry;
 use XML::OPDS::Navigation;
 use XML::OPDS::Acquisition;
+use XML::OPDS::OpenSearch::Query;
 
 =head1 NAME
 
@@ -215,8 +216,12 @@ Return true if there are acquisition objects stacked.
 
 =cut
 
-has navigations => (is => 'rw', isa => ArrayRef[InstanceOf['XML::OPDS::Navigation']], default => sub { [] });
-has acquisitions => (is => 'rw', isa => ArrayRef[InstanceOf['XML::OPDS::Acquisition']], default => sub { [] });
+has navigations => (is => 'rw',
+                    isa => ArrayRef[InstanceOf['XML::OPDS::Navigation']],
+                    default => sub { [] });
+has acquisitions => (is => 'rw',
+                     isa => ArrayRef[InstanceOf['XML::OPDS::Acquisition']],
+                     default => sub { [] });
 has author => (is => 'rw', isa => Str, default => sub { __PACKAGE__ . ' ' . $VERSION });
 has author_uri => (is => 'rw', isa => Str, default => sub { 'http://amusewiki.org' });
 has prefix => (is => 'rw', isa => Str, default => sub { '' });
@@ -224,12 +229,54 @@ has updated => (is => 'rw', isa => Object, default => sub { DateTime->now });
 has icon => (is => 'rw', isa => Str, default => sub { '' });
 has logo => (is => 'rw', isa => Str, default => sub { '' });
 
-has _dt_formatter => (is => 'ro', isa => Object, default => sub { DateTime::Format::RFC3339->new });
+has _dt_formatter => (is => 'ro', isa => Object,
+                      default => sub { DateTime::Format::RFC3339->new });
 has _fh => (is => 'ro',
             isa => Object,
             default => sub {
                 XML::Atom::Namespace->new(fh => 'http://purl.org/syndication/history/1.0');
             });
+
+# opensearch accessors
+
+has _os => (is => 'ro',
+            isa => Object,
+            default => sub {
+                XML::Atom::Namespace->new(opensearch => 'http://a9.com/-/spec/opensearch/1.1/');
+            });
+
+
+=head1 OPENSEARCH RESULTS
+
+The following attributes can be set if you are building an Atom
+response for OpenSearch. See L<XML::OPDS::OpenSearch::Query> for a
+concrete example.
+
+=head2 search_result_pager
+
+A L<Data::Page> object with the specification of the pages.
+
+=head2 search_result_terms
+
+A string with the query for which you are serving the results.
+
+=head2 search_result_queries
+
+Additional Query elements, should be an arrayref of
+L<XML::OPDS::OpenSearch::Query> objects.
+
+=cut
+
+has search_result_pager => (is => 'rw',
+                            isa => InstanceOf['Data::Page']);
+
+has search_result_terms => (is => 'rw',
+                            isa => Str);
+
+has search_result_queries => (is => 'rw',
+                              isa => ArrayRef[InstanceOf['XML::OPDS::OpenSearch::Query']],
+                              default => sub { [] },
+                             );
 
 sub navigation_entries {
     my $self = shift;
@@ -330,6 +377,24 @@ sub atom {
             $author->uri($author_uri);
         }
         $feed->author($author);
+    }
+
+    # opensearch element
+    # http://www.opensearch.org/Specifications/OpenSearch/1.1#OpenSearch_response_elements
+    if (my $pager = $self->search_result_pager) {
+        $feed->set($self->_os, totalResults =>  $pager->total_entries);
+        $feed->set($self->_os, startIndex => $pager->first);
+        $feed->set($self->_os, itemsPerPage => $pager->entries_per_page);
+        if (my $term = $self->search_result_terms) {
+            my $query = XML::OPDS::OpenSearch::Query->new(
+                                                          role => 'request',
+                                                          searchTerms => $term,
+                                                         );
+            $feed->add($self->_os, Query => undef, $query->attributes_hashref);
+        }
+    }
+    foreach my $query (@{ $self->search_result_queries }) {
+        $feed->add($self->_os, Query => undef, $query->attributes_hashref);
     }
     if ($self->is_acquisition) {
         # if it's an acquisition feed, stuff the links in the feed,

@@ -7,6 +7,8 @@ Build-Depends-Indep: libdatetime-format-rfc3339-perl,
  libdatetime-perl,
  libmoo-perl (>= 1),
  libtest-differences-perl,
+ libdata-page-perl,
+ liburi-perl,
  libtype-tiny-perl (>= 1),
  libxml-atom-perl (>= 0.41),
  perl
@@ -18,6 +20,8 @@ Architecture: all
 Depends: ${misc:Depends}, ${perl:Depends},
  libdatetime-format-rfc3339-perl,
  libdatetime-perl,
+ libdata-page-perl,
+ liburi-perl,
  libmoo-perl (>= 1),
  libtype-tiny-perl (>= 1),
  libxml-atom-perl (>= 0.41)
