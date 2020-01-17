@@ -173,7 +173,7 @@ sub attributes_hashref {
         $out{title} = substr $self->title, 0, 256;
     }
     if (defined $self->searchTerms) {
-        $out{searchTerms} = URI::Escape::uri_escape($self->searchTerms);
+        $out{searchTerms} = URI::Escape::uri_escape_utf8($self->searchTerms);
     }
     foreach my $accessor (qw/totalResults
                              count
